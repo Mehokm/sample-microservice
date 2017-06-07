@@ -9,6 +9,7 @@ import (
 	"os/exec"
 
 	"github.com/Mehokm/go-tfts"
+	"github.com/spf13/viper"
 )
 
 // User struct holds basic data about a user
@@ -59,7 +60,15 @@ func (uc UserController) CreateUser(c rest.Context) rest.ResponseSender {
 }
 
 func main() {
-	port := os.Getenv("PORT")
+	// example viper config with ENV vars
+	viper.SetConfigName("sample-conf")
+	viper.SetEnvPrefix("spl")
+
+	viper.AutomaticEnv()
+
+	fmt.Println(fmt.Sprintf("Viper: %v", viper.Get("MYSQL_USER")))
+
+	port := viper.GetString("PORT")
 	if port == "" {
 		port = "5000"
 	}

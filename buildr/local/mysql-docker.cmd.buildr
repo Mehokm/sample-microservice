@@ -2,7 +2,7 @@ echo "Running MYSQL container..."
 
 docker run -it --name mysql \
     -e MYSQL_ROOT_PASSWORD=changeme \
-    -e MYSQL_USER={{.MYSQL_USER}} \
-    -e MYSQL_PASSWORD={{.MYSQL_PASSWORD}} \
-    -e MYSQL_DB={{.MYSQL_DB}} \
+    -e MYSQL_USER={{.SPL_MYSQL_USER}} \
+    -e MYSQL_PASSWORD={{.SPL_MYSQL_PASSWORD}} \
+    -e MYSQL_DB={{.SPL_MYSQL_DB}} \
     -d mysql/mysql-server:5.7
