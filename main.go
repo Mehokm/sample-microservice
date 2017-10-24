@@ -60,13 +60,7 @@ func (uc UserController) CreateUser(c rest.Context) rest.ResponseSender {
 }
 
 func main() {
-	// example viper config with ENV vars
-	viper.SetConfigName("sample-conf")
-	viper.SetEnvPrefix("spl")
-
 	viper.AutomaticEnv()
-
-	fmt.Println(fmt.Sprintf("Viper: %v", viper.Get("MYSQL_USER")))
 
 	port := viper.GetString("PORT")
 	if port == "" {
@@ -79,18 +73,18 @@ func main() {
 
 	router := rest.DefaultRouter().Prefix(root).RouteMap(
 		rest.NewRoute().For("/users/{id:i}").
-			With(rest.MethodGET, userController.GetUser),
+			With(http.MethodGet, userController.GetUser),
 		rest.NewRoute().For("/users").
-			With(rest.MethodGET, userController.GetAllUsers).
-			And(rest.MethodPOST, userController.CreateUser),
+			With(http.MethodGet, userController.GetAllUsers).
+			And(http.MethodPost, userController.CreateUser),
 	)
 
 	health := rest.Router("admin").RouteMap(
-		rest.NewRoute().For("/health").With(rest.MethodGET, func(c rest.Context) rest.ResponseSender {
+		rest.NewRoute().For("/health").With(http.MethodGet, func(c rest.Context) rest.ResponseSender {
 
 			return rest.NewOKJSONResponse("status ok")
 		}),
-		rest.NewRoute().For("/fun").With(rest.MethodGET, func(c rest.Context) rest.ResponseSender {
+		rest.NewRoute().For("/fun").With(http.MethodGet, func(c rest.Context) rest.ResponseSender {
 			cmd := exec.Command("sh", "-c", "basename \"$(cat /proc/1/cpuset)\"")
 
 			var out bytes.Buffer
@@ -103,7 +97,7 @@ func main() {
 
 			return rest.NewOKJSONResponse(fmt.Sprintf("Hello from container id: %v", out.String()))
 		}),
-		rest.NewRoute().For("/env").With(rest.MethodGET, func(c rest.Context) rest.ResponseSender {
+		rest.NewRoute().For("/env").With(http.MethodGet, func(c rest.Context) rest.ResponseSender {
 
 			return rest.NewOKJSONResponse(os.Environ())
 		}),
